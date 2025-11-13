@@ -1,0 +1,31 @@
+// "use client";
+import GraphBody from "./GraphBody";
+
+export default async function Graph({
+  searchParams,
+}: {
+  searchParams: { d: string; t: string; y: number; n: number };
+}) {
+  // department, term, year, and (course) number given from prev page
+  const { d, t, y, n } = await searchParams;
+
+  const res =
+    await fetch(`http://localhost:3001/course/exact?dept=${d}&cn=${n}&term=${t}&year=${y}
+`);
+
+  const data = await res.json();
+  const error = data.error ? 1 : 0; // TODO: create a full error page/component
+
+  console.log(data);
+
+  return (
+    <div className="flex flex-col justify-center items-center h-screen">
+      {error === 0 && <GraphBody data={data} />}
+      {error === 1 && (
+        <div className="border-1">
+          <p className="px-10 py-20 font-semibold text-2xl">Course not found</p>
+        </div>
+      )}
+    </div>
+  );
+}
