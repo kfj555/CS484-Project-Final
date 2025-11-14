@@ -6,11 +6,11 @@ import { Course } from "@/app/types";
 void ChartJS; // prevents from being tree-shaken
 
 const GraphBody = ({ data }: { data: Course }) => {
-  const chartData: ChartData<"bar"> = {
-    labels: ["A", "B", "C", "D", "F"],
+  const gradeChartData: ChartData<"bar"> = {
+    labels: ["A", "B", "C", "D", "F", "Not Reported"],
     datasets: [
       {
-        data: [data.A, data.B, data.C, data.D, data.F],
+        data: [data.A, data.B, data.C, data.D, data.F, data.NR],
         borderWidth: 1,
         backgroundColor: "rgba(212, 31, 11, .7)",
         borderColor: "rgba(212, 31, 11,.7)",
@@ -19,7 +19,7 @@ const GraphBody = ({ data }: { data: Course }) => {
       },
     ],
   };
-  const chartOptions: ChartOptions<"bar"> = {
+  const gradeChartOptions: ChartOptions<"bar"> = {
     responsive: true,
     maintainAspectRatio: true,
     plugins: {
@@ -40,9 +40,49 @@ const GraphBody = ({ data }: { data: Course }) => {
     },
   };
 
+  const satisfactoryChartData: ChartData<"bar"> = {
+    labels: ["Satisfactory", "Unsatisfactory"],
+    datasets: [
+      {
+        data: [data.S, data.U],
+        borderWidth: 1,
+        backgroundColor: "rgba(31, 119, 212, .7)",
+      },
+    ],
+  };
+
+  const satisfactoryChartOptions: ChartOptions<"bar"> = {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      title: {
+        display: true,
+        text: `Satisfactory and Unsatisfactory`,
+        font: { size: 22 },
+      },
+      legend: { display: false },
+    },
+    scales: {
+      x: {
+        title: { text: "Status", display: true, font: { size: 16 } },
+      },
+      y: {
+        title: { text: "# of students", display: true, font: { size: 16 } },
+      },
+    },
+  };
+
+  function renderGraph(){
+    if (data.S > 1 || data.U > 1) {
+      return <Bar data={satisfactoryChartData} options={satisfactoryChartOptions} />;
+    }else if (data.A + data.B + data.C + data.D + data.F + data.NR > 0){
+      return <Bar data={gradeChartData} options={gradeChartOptions} />;
+    }
+  }
+
   return (
     <div className="w-300">
-      <Bar data={chartData} options={chartOptions} />
+      {renderGraph()}
     </div>
   );
 };
