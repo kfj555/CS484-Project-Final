@@ -75,46 +75,6 @@ const GraphBody = ({ data }: { data: Course[] }) => {
     },
   };
 
-  const satisfactoryChartData: ChartData<"bar"> = {
-    labels: ["Satisfactory", "Unsatisfactory"],
-    datasets: [
-      {
-        data: [data.S, data.U],
-        borderWidth: 1,
-        backgroundColor: "rgba(31, 119, 212, .7)",
-      },
-    ],
-  };
-
-  const satisfactoryChartOptions: ChartOptions<"bar"> = {
-    responsive: true,
-    maintainAspectRatio: true,
-    plugins: {
-      title: {
-        display: true,
-        text: `Satisfactory and Unsatisfactory`,
-        font: { size: 22 },
-      },
-      legend: { display: false },
-    },
-    scales: {
-      x: {
-        title: { text: "Status", display: true, font: { size: 16 } },
-      },
-      y: {
-        title: { text: "# of students", display: true, font: { size: 16 } },
-      },
-    },
-  };
-
-  function renderGraph(){
-    if (data.S > 1 || data.U > 1) {
-      return <Bar data={satisfactoryChartData} options={satisfactoryChartOptions} />;
-    }else if (data.A + data.B + data.C + data.D + data.F + data.NR > 0){
-      return <Bar data={gradeChartData} options={gradeChartOptions} />;
-    }
-  }
-
   return (
     <div className="flex flex-col w-200 gap-7">
       {/* Title */}
