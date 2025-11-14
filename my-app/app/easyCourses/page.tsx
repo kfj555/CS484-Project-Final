@@ -15,8 +15,7 @@ export default function EasyCoursesPage() {
     const [departmentArray, setDepartmentArray] = useState<string[]>([]);
     const [selectedDepartment, setSelectedDepartment] = useState<string>("");
     const [selectedLevel, setSelectedLevel] = useState<string>("all");
-    const [easyCoursesArray, setEasyCoursesArray] = useState<EasyCourse[]>([]);
-    const [existsEasyCourses, setExistsEasyCourses] = useState<boolean>(false);
+    const [easyCoursesMap, setEasyCoursesMap] = useState<Map<string, EasyCourse[]>>(new Map());
 
     useEffect(() => {
         const fetchDepartments = async () => {
@@ -34,10 +33,23 @@ export default function EasyCoursesPage() {
                 `http://localhost:3001/statistics/easy?department=${selectedDepartment}&level=${selectedLevel}`
             );
             const easyCoursesData: EasyCourse[] = await easyCoursesRes.json();
-            setEasyCoursesArray(easyCoursesData);
-            setExistsEasyCourses(easyCoursesData.length > 0);
+            const copiedArray: EasyCourse[] = [...easyCoursesData];
+            const newArray: Map<string, EasyCourse[]> = new Map();
+            while (copiedArray.length) {
+                const currentSubjectName = copiedArray.at(0)?.subj_cd;
+                const currentCourseNumber = copiedArray.at(0)?.course_nbr;
+                const currentKey = `${currentSubjectName} ${currentCourseNumber}`;
+                // Initialize the array for this key if it doesn't exist
+                if (!newArray.has(currentKey)) {
+                    newArray.set(currentKey, []);
+                }
+                newArray.get(currentKey)?.push(copiedArray.at(0)!);
+                copiedArray.splice(0, 1);
+            }
+            setEasyCoursesMap(newArray);
         };
         fetchEasyCourses(); 
+        console.log(easyCoursesMap);
     }
 
     return (
@@ -55,34 +67,32 @@ export default function EasyCoursesPage() {
                     value={selectedLevel}
                 />
                 <button id="easy-course-find-button" onClick={findEasyCourseHandler}>Find</button>
-                {easyCoursesArray.length > 0 ? (
-                    <table id="easy-courses-table">
-                        <thead>
-                            <tr>
-                                <th>Subject Code</th>
-                                <th>Course Number</th>
-                                <th>Instructor</th>
-                                <th>Average GPA</th>
-                                <th>Average Percentage</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {easyCoursesArray.map((course, index) => (
-                                <tr key={index}>
-                                    <td>{course.subj_cd}</td>
-                                    <td>{course.course_nbr}</td>
-                                    <td>{course.instructor}</td>
-                                    <td>{course.avg_gpa.toFixed(2)}</td>
-                                    <td>{course.avg_gpa / 4.0 * 100}%</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+            <div className="flex flex-col">
+                {(easyCoursesMap.size > 0) ? (
+                    Array.from(easyCoursesMap.entries()).map(([courseKey, courses], index) => (
+                        <table className="courses-table" key={`${courseKey}-${index}`}>
+                                <thead>
+                                    <tr>
+                                        <th id="course-subject-number-header" colSpan={2}>{courses[0].subj_cd + " " + courses[0].course_nbr}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr className="courses-entries-header-row">
+                                        <th>Instructor</th>
+                                        <th>Average GPA</th>
+                                    </tr>
+                        {courses.map((course, index) => (
+                                    <tr className="courses-entries-row" key={`${courseKey}-${index}`}>
+                                        <th>{course.instructor}</th>
+                                        <th>{course.avg_gpa.toFixed(2)}</th>
+                                    </tr>
+                        ))}
+                                </tbody>
+                        </table>
+                    ))
                 ) : (
                     <p>No entries</p>
                 )}
-            <div>
-
             </div>
         </div>
     );
