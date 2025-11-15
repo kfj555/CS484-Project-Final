@@ -52,9 +52,9 @@ export default function EasyCoursesPage() {
     }
 
     function getGpaColor(gpa: number): string {
-        // Green at 4.0, orange at 3.0, red at 2.0
+        // Green at 4.0 and yellow at 3.0
         const red = Math.min(255, Math.round((4.0 - gpa) * 255));
-        const green = Math.min(255, Math.round((gpa - 2.0) * 127.5));
+        const green = Math.min(255, Math.round((gpa - 1.0) * 110));
         return `rgb(${red}, ${green}, 0)`;
     }
 
