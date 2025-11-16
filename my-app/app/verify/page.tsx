@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function VerifyPage() {
+  // local UI state for email + token verification
   const [email, setEmail] = useState('');
   const [token, setToken] = useState('');
   const [stage, setStage] = useState<'email' | 'token'>('email');
@@ -14,6 +15,7 @@ export default function VerifyPage() {
   const searchParams = useSearchParams();
   const next = searchParams.get('next') || '/';
 
+  // send verification code email via /api/send-token
   async function sendToken(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -36,6 +38,7 @@ export default function VerifyPage() {
     }
   }
 
+  // verify code and set auth cookie via /api/verify-token
   async function verify(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -49,7 +52,7 @@ export default function VerifyPage() {
       });
       const data = await res.json();
       if (!res.ok || !data.ok) throw new Error(data.error || 'Invalid code');
-      router.replace(next);
+      router.replace(next); // on success, redirect to originally requested page
     } catch (err: any) {
       setError(err?.message || 'Verification failed');
     } finally {
