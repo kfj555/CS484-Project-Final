@@ -88,7 +88,7 @@ const GraphBody = ({ data }: { data: Course[] }) => {
     <div className="flex flex-col w-200 gap-7">
       {/* Title */}
       <div>
-        <Button href="./">Back</Button>
+        <Button href="./exact">Back</Button>
         <h1 className="text-lg font-semibold justify-self-center">{`${data[0].subj_cd} ${data[0].course_nbr}: ${data[0].title}`}</h1>
         <h2 className="justify-self-center">{`${seasonMap[data[0].season]} ${
           data[0].year

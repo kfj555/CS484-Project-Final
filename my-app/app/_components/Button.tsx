@@ -11,7 +11,9 @@ interface ButtonProps {
 const Button = ({ href = "", children = null }: ButtonProps) => {
   return (
     <Link href={href}>
-      <button className="border-1 w-30 rounded-md">{children}</button>
+      <button className="border w-30 rounded-md hover:bg-gray-200 hover:cursor-pointer">
+        {children}
+      </button>
     </Link>
   );
 };

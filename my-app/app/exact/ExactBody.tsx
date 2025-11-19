@@ -1,11 +1,12 @@
 "use client";
-import { useEffect } from "react";
-import { useStore } from "./store";
-import Button from "./_components/Button";
-import Select from "./_components/Select";
-import SearchableSelect from "./_components/SearchableSelect";
+import { useEffect, useState } from "react";
+import { useStore } from "../store";
+import Button from "../_components/Button";
+import Select from "../_components/Select";
+import SearchableSelect from "../_components/SearchableSelect";
+import Card from "../_components/Card";
 
-export default function HomeBody() {
+export default function ExactBody() {
   const {
     department,
     setDepartment,
@@ -27,10 +28,14 @@ export default function HomeBody() {
     setCourseNumbers,
   } = useStore();
 
+  const [loaded, setLoaded] = useState(false);
+
   // initial fetch sets all selections with persistence
   useEffect(() => {
     const fetchInitialData = async () => {
       const deptsRes = await fetch("http://localhost:3001/department");
+      // const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+      // await delay(1000); // artificial delay for loading demo
       const depts: { subj_cd: string; dept_name: string }[] = (
         await deptsRes.json()
       ).slice(1); // removes empty dept at start
@@ -94,13 +99,16 @@ export default function HomeBody() {
         : coursesData[0];
       setCourseNumber(currentCourse);
     };
-
-    fetchInitialData();
+    const run = async () => {
+      await fetchInitialData();
+      setLoaded(true);
+    };
+    run();
   }, []);
 
   // fetch years available for department
   useEffect(() => {
-    if (!subj || !department) return;
+    if (!loaded || !subj || !department) return;
 
     const fetchYears = async () => {
       const res = await fetch(
@@ -115,11 +123,11 @@ export default function HomeBody() {
     };
 
     fetchYears();
-  }, [subj, department]);
+  }, [subj, department, loaded]);
 
   // fetch terms available for department and year
   useEffect(() => {
-    if (!subj || !year || !department) return;
+    if (!loaded || !subj || !year || !department) return;
 
     const fetchTerms = async () => {
       const res = await fetch(
@@ -134,11 +142,11 @@ export default function HomeBody() {
     };
 
     fetchTerms();
-  }, [subj, year, department]);
+  }, [subj, year, department, loaded]);
 
   // fetch course numbers available for department, year, and term
   useEffect(() => {
-    if (!subj || !year || !term || !department) return;
+    if (!loaded || !subj || !year || !term || !department) return;
 
     const fetchCourses = async () => {
       const res = await fetch(
@@ -155,13 +163,18 @@ export default function HomeBody() {
     };
 
     fetchCourses();
-  }, [subj, year, term, department]);
+  }, [subj, year, term, department, loaded]);
+
+  // used to determine loading state
+  const loadingYears = years.length === 0;
+  const loadingTerms = terms.length === 0;
+  const loadingCourses = courseNumbers.length === 0;
 
   return (
     <div>
-      <Button href="./easyCourses">Find Easy Courses</Button>
-      <div className="flex flex-col gap-3 border w-fit p-6 my-10">
-        {departments.length > 0 && (
+      <Card>
+        {/* Searchbar for departments */}
+        {departments.length > 0 ? (
           <SearchableSelect
             label="Departments"
             items={departments}
@@ -170,28 +183,46 @@ export default function HomeBody() {
                 (d) => d.subj_cd === subj && d.dept_name === department
               ) ?? departments[0]
             } // initial value either saved or first
-            getOptionText={(d) => `${d.dept_name} - ${d.subj_cd}`} //format for the options list
+            getOptionText={(d) => `${d.dept_name} - ${d.subj_cd}`} // format for the options list
             onChange={(d) => {
               setDepartment(d.dept_name);
               setSubj(d.subj_cd);
             }}
           />
+        ) : (
+          <Select label="Departments" items={[]} loading={true} />
         )}
-
-        <Select label="Year" items={years} value={year} onChange={setYear} />
-        <Select label="Terms" items={terms} value={term} onChange={setTerm} />
+        {/* Select bar for year, terms/seasons, and course numbers */}
+        <Select
+          label="Year"
+          items={years}
+          value={year}
+          onChange={setYear}
+          loading={loadingYears}
+        />
+        <Select
+          label="Terms"
+          items={terms}
+          value={term}
+          onChange={setTerm}
+          loading={loadingTerms}
+        />
         <Select
           label="Course Numbers"
           items={courseNumbers}
           value={courseNumber}
           onChange={setCourseNumber}
+          loading={loadingCourses}
         />
-        <Button
-          href={`./graph?d=${subj}&t=${term}&y=${year}&n=${courseNumber}`}
-        >
-          Get Graph
-        </Button>
-      </div>
+        <div className="flex justify-evenly">
+          <Button href="./">Back</Button>
+          <Button
+            href={`./graph?d=${subj}&t=${term}&y=${year}&n=${courseNumber}`}
+          >
+            Get Graph
+          </Button>
+        </div>
+      </Card>
     </div>
   );
 }

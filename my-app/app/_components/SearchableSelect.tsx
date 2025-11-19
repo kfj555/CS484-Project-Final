@@ -40,18 +40,20 @@ export default function SearchableSelect<T>({
         className="border px-2 py-1 mt-1"
         size={5}
         value={value ? getOptionText(value) : ""}
-        onChange={(e) => {
-          const selected = filteredItems.find(
-            (item) => getOptionText(item) === e.target.value
-          ); // find selected item based on formatted text
-          if (selected) onChange(selected);
-        }}
+        onChange={() => {}}
       >
         {filteredItems.length === 0 ? (
           <option disabled>No matches</option>
         ) : (
           filteredItems.map((item, index) => (
-            <option key={index} value={getOptionText(item)}>
+            <option
+              key={index}
+              value={getOptionText(item)}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                onChange(item); // handles selection, accounts for first item selection issue
+              }}
+            >
               {getOptionText(item)}
             </option>
           ))

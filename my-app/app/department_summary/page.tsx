@@ -4,6 +4,9 @@ import Select from "../_components/Select";
 import "../styles/easyCourses.css";
 import SearchableSelect from "../_components/SearchableSelect";
 import { url } from "inspector";
+import Card from "../_components/Card";
+import Button from "../_components/Button";
+import Link from "next/link";
 
 type EasyCourse = {
   subj_cd: string;
@@ -76,70 +79,81 @@ export default function EasyCoursesPage() {
 
   return (
     <div className="flex flex-col items-center py-10">
-      <div className="flex flex-col items-center">
-        <SearchableSelect
-          label="Department"
-          items={departmentArray}
-          onChange={(d) => setSelectedDepartment(d)}
-          value={selectedDepartment}
-        />
-
-        <Select
-          label="Course Levels"
-          items={courseLevels}
-          onChange={setSelectedLevel}
-          value={selectedLevel}
-        />
-        <button id="easy-course-find-button" onClick={findEasyCourseHandler}>
-          Find
-        </button>
-      </div>
-      <div className="easy-courses-results-container">
-        <div className="flex flex-col">
-          {easyCoursesMap.size > 0 ? (
-            Array.from(easyCoursesMap.entries()).map(
-              ([courseKey, courses], index) => (
-                <table className="courses-table" key={`${courseKey}-${index}`}>
-                  <thead>
-                    <tr>
-                      <th
-                        id={courseKey}
-                        className="course-subject-number-header"
-                        colSpan={2}
-                      >
-                        {courses[0].subj_cd + " " + courses[0].course_nbr}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="courses-entries-header-row">
-                      <th>Instructor</th>
-                      <th>Average GPA</th>
-                    </tr>
-                    {courses.map((course, index) => (
-                      <tr
-                        className="courses-entries-row"
-                        key={`${courseKey}-${index}`}
-                      >
-                        <th>{course.instructor}</th>
+      <div className=" mt-8 mr-120"></div>
+      <Card>
+        <div className="flex flex-col items-center">
+          <SearchableSelect
+            label="Department"
+            items={departmentArray}
+            onChange={(d) => setSelectedDepartment(d)}
+            value={selectedDepartment}
+          />
+          <Select
+            label="Course Levels"
+            items={courseLevels}
+            onChange={setSelectedLevel}
+            value={selectedLevel}
+          />
+          <div className="flex flex-col gap-4">
+            <button
+              id="easy-course-find-button"
+              onClick={findEasyCourseHandler}
+            >
+              Find
+            </button>
+            <Button href="/">Back</Button>
+          </div>
+        </div>
+        <div className="easy-courses-results-container">
+          <div className="flex flex-col">
+            {easyCoursesMap.size > 0 ? (
+              Array.from(easyCoursesMap.entries()).map(
+                ([courseKey, courses], index) => (
+                  <table
+                    className="courses-table"
+                    key={`${courseKey}-${index}`}
+                  >
+                    <thead>
+                      <tr>
                         <th
-                          style={{
-                            backgroundColor: getGpaColor(course.avg_gpa),
-                          }}
+                          id={courseKey}
+                          className="course-subject-number-header"
+                          colSpan={2}
                         >
-                          {course.avg_gpa.toFixed(2)}
+                          {courses[0].subj_cd + " " + courses[0].course_nbr}
                         </th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      <tr className="courses-entries-header-row">
+                        <th>Instructor</th>
+                        <th>Average GPA</th>
+                      </tr>
+                      {courses.map((course, index) => (
+                        <tr
+                          className="courses-entries-row"
+                          key={`${courseKey}-${index}`}
+                        >
+                          <th>{course.instructor}</th>
+                          <th
+                            style={{
+                              backgroundColor: getGpaColor(course.avg_gpa),
+                            }}
+                          >
+                            {course.avg_gpa.toFixed(2)}
+                          </th>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )
               )
-            )
-          ) : (
-            <p>No entries</p>
-          )}
+            ) : (
+              <p>No entries</p>
+            )}
+          </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }
