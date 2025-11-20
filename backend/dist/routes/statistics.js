@@ -1,8 +1,19 @@
 import express from "express";
 import Database from "better-sqlite3";
 import path from "path";
-const dbPath = path.join(process.cwd(), "data", "courses.db");
-const db = new Database(dbPath, { readonly: true });
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const dbPath = path.join(__dirname, "../data/courses.db");
+let db;
+try {
+    db = new Database(dbPath, { readonly: true });
+}
+catch (err) {
+    console.error("Failed to open SQLite database:", err);
+    process.exit(1);
+}
 export const statisticsRouter = express.Router();
 statisticsRouter.get("/", (req, res) => {
     res.json([]);
