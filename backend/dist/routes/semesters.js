@@ -1,20 +1,14 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.semesterRouter = void 0;
-const express_1 = __importDefault(require("express"));
-const better_sqlite3_1 = __importDefault(require("better-sqlite3"));
-const path_1 = __importDefault(require("path"));
-const dbPath = path_1.default.join(process.cwd(), "data", "courses.db");
-const db = new better_sqlite3_1.default(dbPath, { readonly: true });
-exports.semesterRouter = express_1.default.Router();
+import express from "express";
+import Database from "better-sqlite3";
+import path from "path";
+const dbPath = path.join(process.cwd(), "data", "courses.db");
+const db = new Database(dbPath, { readonly: true });
+export const semesterRouter = express.Router();
 // full route would be 'http://localhost:3001/semesters"
 // sends semester seasons for a given department and year
 // Ex: localhost:3001/semesters?department=Computer%20Science&year=2025
 // returns ['SP', 'SU'] at time of writing since Fall 2025 has not concluded
-exports.semesterRouter.get("/", (req, res) => {
+semesterRouter.get("/", (req, res) => {
     const { department, year, subj } = req.query;
     console.log(department, subj, year);
     const rows = db
@@ -35,7 +29,7 @@ exports.semesterRouter.get("/", (req, res) => {
     res.json(semesters);
 });
 // returns available course numbers for a given department, year, and season
-exports.semesterRouter.get("/courses", (req, res) => {
+semesterRouter.get("/courses", (req, res) => {
     const { subj, department, year, season } = req.query;
     const rows = db
         .prepare(`

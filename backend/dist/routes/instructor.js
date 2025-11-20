@@ -1,18 +1,12 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.instructorRouter = void 0;
-const express_1 = __importDefault(require("express"));
-const better_sqlite3_1 = __importDefault(require("better-sqlite3"));
-const path_1 = __importDefault(require("path"));
-const dbPath = path_1.default.join(process.cwd(), "data", "courses.db");
-const db = new better_sqlite3_1.default(dbPath, { readonly: true });
-exports.instructorRouter = express_1.default.Router();
+import express from "express";
+import Database from "better-sqlite3";
+import path from "path";
+const dbPath = path.join(process.cwd(), "data", "courses.db");
+const db = new Database(dbPath, { readonly: true });
+export const instructorRouter = express.Router();
 // full route would be 'http://localhost:3001/instructor"
 // sends full list of instructors
-exports.instructorRouter.get("/", (req, res) => {
+instructorRouter.get("/", (req, res) => {
     const instructor = db
         .prepare(`
       SELECT DISTINCT instructor 
@@ -27,7 +21,7 @@ exports.instructorRouter.get("/", (req, res) => {
     }
     res.json(instructor);
 });
-exports.instructorRouter.get("/info", (req, res) => {
+instructorRouter.get("/info", (req, res) => {
     const { name } = req.query;
     // (4 * A + 3 * B + 2 * C + D) /grade_regs - W;
     const instructor = db

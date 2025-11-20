@@ -1,19 +1,13 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.statisticsRouter = void 0;
-const express_1 = __importDefault(require("express"));
-const better_sqlite3_1 = __importDefault(require("better-sqlite3"));
-const path_1 = __importDefault(require("path"));
-const dbPath = path_1.default.join(process.cwd(), "data", "courses.db");
-const db = new better_sqlite3_1.default(dbPath, { readonly: true });
-exports.statisticsRouter = express_1.default.Router();
-exports.statisticsRouter.get("/", (req, res) => {
+import express from "express";
+import Database from "better-sqlite3";
+import path from "path";
+const dbPath = path.join(process.cwd(), "data", "courses.db");
+const db = new Database(dbPath, { readonly: true });
+export const statisticsRouter = express.Router();
+statisticsRouter.get("/", (req, res) => {
     res.json([]);
 });
-exports.statisticsRouter.get("/easy", (req, res) => {
+statisticsRouter.get("/easy", (req, res) => {
     const { department, subj, level } = req.query;
     // Normalize and validate level to avoid producing `undefined%`.
     const stringLevel = String(level).trim();
