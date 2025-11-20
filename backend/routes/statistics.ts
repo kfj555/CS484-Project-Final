@@ -20,7 +20,7 @@ statisticsRouter.get("/easy", (req: Request, res: Response) => {
   if (stringLevel === "all") {
     dbCourseLevel = "%";
   } else {
-    dbCourseLevel = `${stringLevel.at(0)}%`;
+    dbCourseLevel = `${stringLevel[0]}%`;
   }
   const rows = db
     .prepare(
