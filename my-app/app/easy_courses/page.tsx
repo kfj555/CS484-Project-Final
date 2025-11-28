@@ -50,6 +50,29 @@ const Easy_courses = () => {
     const [hideMenu, setHideMenu] = useState<boolean>(false);
     //Prevent user from requesting the same data multiple times
     const fetchedDataRef = useRef<string>("");
+    //Show top button when scrolled down
+    const [showTopButton, setShowTopButton] = useState<boolean>(false);
+
+    // Listen to window scroll so the fixed button appears when the user scrolls the page
+    useEffect(() => {
+        const onWindowScroll = () => {
+            const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+            // avoid division by zero; if no scrollable area, hide the button
+            if (!scrollable) {
+                setShowTopButton(false);
+                return;
+            }
+            const pct = window.scrollY / scrollable; // 0..1
+            if (pct > 0.5) setShowTopButton(true); // show after 50% of page
+            else setShowTopButton(false);
+        };
+
+        // Attach listener and do an initial check
+        window.addEventListener("scroll", onWindowScroll, { passive: true });
+        onWindowScroll();
+
+        return () => window.removeEventListener("scroll", onWindowScroll);
+    }, []);
     
     useEffect(() => {
         const fetchData = async () => {
@@ -231,9 +254,17 @@ const Easy_courses = () => {
               <button id="hide-menu-button" onClick={() => setHideMenu(!hideMenu)}>{hideMenu ? "Show" : "Hide"}</button>
             </div>
           </div>
-            <div id="easy-courses-results-container">
-                {showResults && allowRenderTable ? renderTable() : <h3 className="mt-4 text-center">No results to display</h3>}
-            </div>
+          <div id="easy-courses-results-container">
+              {showResults && allowRenderTable ? renderTable() : <h3 className="mt-4 text-center">No results to display</h3>}
+          </div>
+          {showTopButton && (
+              <button
+                  id="scroll-to-top-button"
+                  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              >
+                  Scroll to Top
+              </button>
+          )}
         </div>
     );
 }
