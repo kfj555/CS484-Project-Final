@@ -15,12 +15,12 @@ const seasonMap = {
 
 type GraphOptions = "bar" | "pie" | "radar";
 
-const GraphBody = ({ data }: { data: Course[] }) => {
+const HistoryGraphBody = ({ data }: { data: Course[] }) => {
   const [graphType, setGraphType] = useState<GraphOptions>("bar");
 
   return (
     <div className="flex flex-col w-200">
-      <Button href="./exact">Back</Button>
+      <Button href="./history">Back</Button>
       {/* Title */}
       <div className="justify-items-center mb-4">
         <h1 className="text-lg font-semibold">
@@ -91,4 +91,4 @@ const GraphBody = ({ data }: { data: Course[] }) => {
   );
 };
 
-export default GraphBody;
+export default HistoryGraphBody;

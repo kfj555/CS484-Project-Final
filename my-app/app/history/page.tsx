@@ -10,20 +10,12 @@ export default function ExactBody() {
   const {
     department,
     setDepartment,
-    year,
-    setYear,
-    term,
-    setTerm,
     courseNumber,
     setCourseNumber,
     subj,
     setSubj,
     departments,
     setDepartments,
-    years,
-    setYears,
-    terms,
-    setTerms,
     courseNumbers,
     setCourseNumbers,
   } = useStore();
@@ -35,8 +27,6 @@ export default function ExactBody() {
   useEffect(() => {
     const fetchInitialData = async () => {
       const deptsRes = await fetch(`${BASE}/department`);
-      // const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-      // await delay(1000); // artificial delay for loading demo
       const depts: { subj_cd: string; dept_name: string }[] = (
         await deptsRes.json()
       ).slice(1); // removes empty dept at start
@@ -53,43 +43,11 @@ export default function ExactBody() {
       setDepartment(currentDept.dept_name);
       setSubj(currentDept.subj_cd);
 
-      // fetch years
-      const yearsRes = await fetch(
-        `${BASE}/year?s=${encodeURIComponent(
-          currentDept.subj_cd
-        )}&d=${encodeURIComponent(currentDept.dept_name)}`
-      );
-      const yearsData = await yearsRes.json();
-      setYears(yearsData);
-
-      // either saved year or most recent year
-      const currentYear = yearsData.includes(year) ? year : yearsData[0];
-      setYear(currentYear);
-
-      // fetch terms
-      const termsRes = await fetch(
-        `${BASE}/semesters?department=${encodeURIComponent(
-          currentDept.dept_name
-        )}&subj=${encodeURIComponent(
-          currentDept.subj_cd
-        )}&year=${encodeURIComponent(currentYear)}`
-      );
-      const termsData = await termsRes.json();
-      setTerms(termsData);
-
-      // either saved term or most recent term
-      const currentTerm = termsData.includes(term) ? term : termsData[0];
-      setTerm(currentTerm);
-
       // fetch courses
       const coursesRes = await fetch(
-        `${BASE}/semesters/courses?subj=${encodeURIComponent(
+        `${BASE}/course?subj=${encodeURIComponent(
           currentDept.subj_cd
-        )}&department=${encodeURIComponent(
-          currentDept.dept_name
-        )}&year=${encodeURIComponent(currentYear)}&season=${encodeURIComponent(
-          currentTerm
-        )}`
+        )}&department=${encodeURIComponent(currentDept.dept_name)}`
       );
       const coursesData = await coursesRes.json();
       setCourseNumbers(coursesData);
@@ -107,55 +65,15 @@ export default function ExactBody() {
     run();
   }, []);
 
-  // fetch years available for department
+  // fetch course numbers available for department, year, and term
   useEffect(() => {
     if (!loaded || !subj || !department) return;
 
-    const fetchYears = async () => {
-      const res = await fetch(
-        `${BASE}/year?s=${encodeURIComponent(subj)}&d=${encodeURIComponent(
-          department
-        )}`
-      );
-      const data = await res.json();
-      setYears(data);
-      const newYear = data.includes(year) ? year : data[0];
-      setYear(newYear);
-    };
-
-    fetchYears();
-  }, [subj, department, loaded]);
-
-  // fetch terms available for department and year
-  useEffect(() => {
-    if (!loaded || !subj || !year || !department) return;
-
-    const fetchTerms = async () => {
-      const res = await fetch(
-        `${BASE}/semesters?department=${encodeURIComponent(
-          department
-        )}&subj=${encodeURIComponent(subj)}&year=${encodeURIComponent(year)}`
-      );
-      const data = await res.json();
-      setTerms(data);
-      const newTerm = data.includes(term) ? term : data[0];
-      setTerm(newTerm);
-    };
-
-    fetchTerms();
-  }, [subj, year, department, loaded]);
-
-  // fetch course numbers available for department, year, and term
-  useEffect(() => {
-    if (!loaded || !subj || !year || !term || !department) return;
-
     const fetchCourses = async () => {
       const res = await fetch(
-        `${BASE}/semesters/courses?subj=${encodeURIComponent(
+        `${BASE}/course?subj=${encodeURIComponent(
           subj
-        )}&department=${encodeURIComponent(
-          department
-        )}&year=${encodeURIComponent(year)}&season=${encodeURIComponent(term)}`
+        )}&department=${encodeURIComponent(department)}`
       );
       const data = await res.json();
       setCourseNumbers(data);
@@ -164,15 +82,13 @@ export default function ExactBody() {
     };
 
     fetchCourses();
-  }, [subj, year, term, department, loaded]);
+  }, [subj, department, loaded]);
 
   // used to determine loading state
-  const loadingYears = years.length === 0;
-  const loadingTerms = terms.length === 0;
   const loadingCourses = courseNumbers.length === 0;
 
   return (
-    <div>
+    <div className="flex items-center justify-center w-full">
       <Card>
         {/* Searchbar for departments */}
         {departments.length > 0 ? (
@@ -195,20 +111,6 @@ export default function ExactBody() {
         )}
         {/* Select bar for year, terms/seasons, and course numbers */}
         <Select
-          label="Year"
-          items={years}
-          value={year}
-          onChange={setYear}
-          loading={loadingYears}
-        />
-        <Select
-          label="Terms"
-          items={terms}
-          value={term}
-          onChange={setTerm}
-          loading={loadingTerms}
-        />
-        <Select
           label="Course Numbers"
           items={courseNumbers}
           value={courseNumber}
@@ -217,9 +119,7 @@ export default function ExactBody() {
         />
         <div className="flex justify-evenly">
           <Button href="./">Back</Button>
-          <Button
-            href={`./graph?type=exact&d=${subj}&t=${term}&y=${year}&n=${courseNumber}`}
-          >
+          <Button href={`./graph?type=history&s=${subj}&d=${department}`}>
             Get Graph
           </Button>
         </div>
