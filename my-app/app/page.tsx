@@ -29,6 +29,11 @@ const Home = () => {
             See Instructors
           </button>
         </Link>
+        <Link href="./about">
+          <button className="border w-80 h-15 rounded-md hover:bg-gray-200 hover:cursor-pointer">
+            About This App
+          </button>
+        </Link>
       </div>
     </div>
   );
