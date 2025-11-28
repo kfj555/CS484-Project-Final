@@ -10,7 +10,7 @@ export default function About() {
                     It provides insights into course difficulty and student satisfaction to assist in course selection.
                     This app is <b>only for UIC students</b> as you will need a valid UIC email to access the website.
                     The reason being that the data used in this application is not publicly available and is sourced from UIC's web application.
-                    This was created as a group project for <a className="about-a" href="https://484.cs.uic.edu" target="_blank">CS 484: Web Application Development</a> at the University of Illinois Chicago
+                    This was created as a group project for <a className="about-a" rel="external noopener noreferrer" href="https://484.cs.uic.edu" target="_blank">CS 484: Web Application Development</a> at the University of Illinois Chicago
                     during the Fall 2025 semester. 
                 </p>
                 <br/>
@@ -24,17 +24,18 @@ export default function About() {
                     </ul>
                 </div>
                 <br/>
-                <p>Github repository link: <a className="about-a" href="https://github.com/agome277/CS484-Project" target="_blank">https://github.com/agome277/CS484-Project</a></p>
+                <p>Github repository link: <a className="about-a" rel="external noopener noreferrer" href="https://github.com/agome277/CS484-Project" target="_blank">https://github.com/agome277/CS484-Project</a></p>
             </div>
 
             <div className="data-source-section">
                 <h2 className="about-h2">Data Source</h2>
-                <p>Data collected from <a className="about-a" href="https://oir.uic.edu/data/student-data/grade-distribution/">https://oir.uic.edu/data/student-data/grade-distribution/</a></p>
+                <p>Data collected from <a className="about-a" rel="external noopener noreferrer" href="https://oir.uic.edu/data/student-data/grade-distribution/">https://oir.uic.edu/data/student-data/grade-distribution/</a></p>
                 <br/>
                 <p>Disclaimer: The data used in this application is not publicly available and is sourced from UIC's web application.
                     While efforts have been made to ensure the accuracy of the data, there may be discrepancies or errors present.
                     Users are advised to verify any critical information directly with official UIC resources.
                 </p>
+                <br/>
             </div>
 
             <div className="how-to-use-section">
