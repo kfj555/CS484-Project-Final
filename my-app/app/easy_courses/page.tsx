@@ -184,8 +184,8 @@ const Easy_courses = () => {
                                     <tr>
                                         <th title="The instructor for the course">Instructor</th>
                                         <th title="Average Grade Point Average">Avg GPA</th>
-                                        <th title="% of students with an A in the course">% A Grade</th>
-                                        <th title="Amount of students who passed the course">Pass Rate</th>
+                                        <th title="Percentage of students with an A in the course">% A Grade</th>
+                                        <th title="Percentage of students who passed the course">Pass Rate</th>
                                         <th title="Percentage of students who met the prerequisite rate. (C grade or better)">Prereq Rate</th>
                                         <th title="Percentage of students who withdrew from the course">Withdraw Rate</th>
                                     </tr>
@@ -193,7 +193,11 @@ const Easy_courses = () => {
                                 <tbody>
                                     {courses.map((course, idx) => (
                                         <tr key={idx}>
-                                            <td className="course-instructor-name-cell">{course.instructor}</td>
+                                            <td className="course-instructor-name-cell">
+                                              <a href={`/instructors?name=${encodeURIComponent(course.instructor)}`}>
+                                                {course.instructor}
+                                              </a>
+                                            </td>
                                             <td style={{ backgroundColor: getGpaColor(course.avg_gpa) }}>{course.avg_gpa.toFixed(2)}</td>
                                             <td style={{ backgroundColor: getPercentColor(course.percent_A_grade)}}>{course.percent_A_grade.toFixed(1)}%</td>
                                             <td style={{backgroundColor: getPercentColor(course.pass_rate)}}>{course.pass_rate.toFixed(1)}%</td>
@@ -224,9 +228,15 @@ const Easy_courses = () => {
                                 <tbody>
                                     {courses.map((course, idx) => (
                                         <tr key={idx}>
-                                            <td className="course-instructor-name-cell">{course.instructor}</td>
-                                            <td style={{backgroundColor: getPercentColor(course.satisfaction_rate)}}>{course.satisfaction_rate.toFixed(1)}%</td>
-                                            <td>{course.withdraw_rate.toFixed(1)}%</td>
+                                            <td className="course-instructor-name-cell">
+                                              <a href={`/instructors?name=${encodeURIComponent(course.instructor)}`}>
+                                                {course.instructor}
+                                              </a>
+                                            </td>
+                                            <td title="Percentage of students that have earned satisfactory grade" style={{backgroundColor: getPercentColor(course.satisfaction_rate)}}>
+                                              {course.satisfaction_rate.toFixed(1)}%
+                                            </td>
+                                            <td title="The percentage of students who withdrew from the course">{course.withdraw_rate.toFixed(1)}%</td>
                                         </tr>
                                     ))}
                                 </tbody>

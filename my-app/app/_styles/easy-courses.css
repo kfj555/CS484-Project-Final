@@ -74,6 +74,14 @@ th, td {
 .course-instructor-name-cell{
     text-align: left;
     font-weight: bold;
+
+    a{
+        text-decoration: none;
+        color: inherit;
+        &:hover{
+            text-decoration: underline;
+        }
+    }
 }
 
 .pass-rate-meter{

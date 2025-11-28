@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Card from "../_components/Card";
 import SearchableSelect from "../_components/SearchableSelect";
 import Button from "../_components/Button";
@@ -12,16 +13,31 @@ const Instructor = () => {
     { title: string; avg_gpa: number }[]
   >([]);
 
+  const searchParams = useSearchParams();
+
   useEffect(() => {
     const fetchInstructors = async () => {
       const res = await fetch(`${BASE}/instructor`);
       const data = await res.json();
       const instructorData = data.splice(1); // remove , at start
       setInstructors(instructorData);
+
+      // If a name was passed via query string, use it when present in the list
+      const paramName = searchParams?.get("name") || "";
+      if (paramName) {
+        const found = instructorData.find((i: { instructor: string }) => i.instructor === paramName);
+        if (found) {
+          setInstructor(found.instructor);
+          return;
+        }
+      }
+
+      // otherwise default to first
       setInstructor(instructorData[0]?.instructor || "");
     };
     fetchInstructors();
-  }, []);
+    // include searchParams in deps so we react to URL changes
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchInfo = async () => {

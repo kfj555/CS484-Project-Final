@@ -11,7 +11,7 @@ export default function About() {
                     This application is designed to help students find easy courses based on GPA and satisfaction rates. 
                     It provides insights into course difficulty and student satisfaction to assist in course selection.
                     This app is <b>only for UIC students</b> as you will need a valid UIC email to access the website.
-                    The reason being that the data used in this application is not publicly available and is sourced from UIC's web application.
+                    The reason being that the data used in this application is not publicly available and is sourced from UIC&apos;s web application.
                     This was created as a group project for <a className="about-a" rel="external noopener noreferrer" href="https://484.cs.uic.edu" target="_blank">CS 484: Web Application Development</a> at the University of Illinois Chicago
                     during the Fall 2025 semester. 
                 </p>
@@ -33,7 +33,7 @@ export default function About() {
                 <h2 className="about-h2">Data Source</h2>
                 <p>Data collected from <a className="about-a" rel="external noopener noreferrer" href="https://oir.uic.edu/data/student-data/grade-distribution/">https://oir.uic.edu/data/student-data/grade-distribution/</a></p>
                 <br/>
-                <p>Disclaimer: The data used in this application is not publicly available and is sourced from UIC's web application.
+                <p>Disclaimer: The data used in this application is not publicly available and is sourced from UIC&apos;s web application.
                     While efforts have been made to ensure the accuracy of the data, there may be discrepancies or errors present.
                     Users are advised to verify any critical information directly with official UIC resources.
                 </p>
@@ -93,7 +93,9 @@ export default function About() {
                     <li><b>Satisfaction Rate:</b> The percentage of students who received a Satisfactory (S) grade in the course.</li>
                     <li><b>Withdraw Rate:</b> The percentage of students who withdrew from the course.</li>
                 </ul>
-                <p>Users can always hover over column headers to see detailed explanations of each metric.</p>
+                <p>Users can always hover over column headers to see detailed explanations of each metric. There will also
+                    be links on the instructor names that will take you to the Instructors page with that specific instructor selected so you can see what courses they have taught.
+                </p>
 
                 <h2 className="about-h2">Exact Courses</h2>
                 <p>Users can search for specific courses by selecting the department, entering the course number, choosing the term and year.
