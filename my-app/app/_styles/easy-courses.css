@@ -1,0 +1,106 @@
+#easy-courses-back-button {
+    border-radius: 4px;
+    width: fit-content;
+    padding: 0.2rem 0.5rem;
+    background-color: #001E62;
+    color: #F2F7EB;
+
+    &:hover {
+        background-color: #0033a0;
+    }
+}
+
+#easy-courses-button-container button{
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #D50032;
+    color: #F2F7EB;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0.5rem;
+
+    &:hover{
+        background-color: #ff003c;
+    }
+}
+
+.all-tables-container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.tables-container{
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto;
+    margin: 0 1rem;
+}
+
+.table-container {
+    margin-bottom: 2rem;
+    table {
+        width: 100%;
+    }
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+.course-table-header tr{
+    background-color: #D50032;
+    color: #F2F7EB;
+}
+
+.course-name{
+    text-align: left;
+    font-size: x-large;
+    background-color: #D50032;
+    color: #F2F7EB;
+    padding: 0 0.5rem;
+    border: 1px solid black;
+    border-bottom: none;
+}
+
+.course-instructor-name-cell{
+    text-align: left;
+    font-weight: bold;
+
+    a{
+        text-decoration: none;
+        color: inherit;
+        &:hover{
+            text-decoration: underline;
+        }
+    }
+}
+
+.pass-rate-meter{
+    border: 1px solid #000000;
+}
+
+#scroll-to-top-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 0.5rem 1rem;
+    background-color: #001E62;
+    color: #F2F7EB;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 1000;
+
+    &:hover {
+        background-color: #0033a0;
+    }
+}
