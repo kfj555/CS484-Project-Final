@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Card from "../_components/Card";
 import SearchableSelect from "../_components/SearchableSelect";
 import Button from "../_components/Button";
@@ -30,6 +31,7 @@ const Instructor = () => {
       }
     };
     fetchInstructors();
+    // include searchParams in deps so we react to URL changes
   }, []);
 
   // fetches info for selected professors
@@ -60,16 +62,18 @@ const Instructor = () => {
   return (
     <div className="flex flex-col items-center justify-center w-full">
       {/* Select instructor */}
-      <Card>
-        <SearchableSelect
-          label="Instructors"
-          items={instructors}
-          value={{ instructor: instructor }}
-          getOptionText={(i) => i.instructor}
-          onChange={(i) => setInstructor(i.instructor)}
-        />
-        <Button href="/">Back</Button>
-      </Card>
+      <div className="mb-8">
+        <Card>
+          <SearchableSelect
+            label="Instructors"
+            items={instructors}
+            value={{ instructor: instructor }}
+            getOptionText={(i) => i.instructor}
+            onChange={(i) => setInstructor(i.instructor)}
+          />
+          <Button href="/">Back</Button>
+        </Card>
+      </div>
       {/* Instructor's info */}
       <Card>
         <div className="w-120">

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Select from "../_components/Select";
-import "../_styles/easyCourses.css";
+import "../_styles/department-summary.css"
 import SearchableSelect from "../_components/SearchableSelect";
 import { url } from "inspector";
 import Card from "../_components/Card";
@@ -55,7 +55,7 @@ export default function EasyCoursesPage() {
       const [deptName, subjCode] = selectedDepartment.split(" - ");
 
       const easyCoursesRes = await fetch(
-        `${BASE}/statistics/easy?department=${encodeURIComponent(
+        `${BASE}/statistics/all?department=${encodeURIComponent(
           deptName
         )}&subj=${encodeURIComponent(subjCode)}&level=${encodeURIComponent(
           selectedLevel

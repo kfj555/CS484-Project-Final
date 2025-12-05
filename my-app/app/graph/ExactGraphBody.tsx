@@ -5,6 +5,7 @@ import { Course } from "@/app/types";
 import Button from "../_components/Button";
 import { useState } from "react";
 import RadarChart from "../_components/RadarChart";
+import Card from "../_components/Card";
 
 const seasonMap = {
   FA: "Fall",
@@ -45,47 +46,59 @@ const ExactGraphBody = ({ data }: { data: Course[] }) => {
       {data.map((course, index) => {
         const { A, B, C, D, F, grade_regs, W, S, U } = course;
         return (
-          <div key={index} className="border mx-3 p-3 mb-7">
-            {/* Bar Chart if selected */}
-            {graphType === "bar" && <BarChart data={data[index]} />}
-
-            {/* Pie Chart if selected */}
-            {graphType === "pie" && (
-              <div className="w-6/10 justify-self-center">
-                <PieChart data={data[index]} />
+          // <div key={index} className="border mx-3 p-3 mb-7">
+          <div className="my-7">
+            <Card key={index}>
+              {/* <div className="flex gap-8 mx-10 text-slate-600">
+                <Card color="rgba(10,10,100,0.2)">
+                  <div className="flex flex-col gap-1">
+                    <p>Average GPA</p>
+                    <hr />
+                    <p>
+                      {((4 * A + 3 * B + 2 * C + D) / (grade_regs - W)).toFixed(
+                        2
+                      )}
+                    </p>
+                  </div>
+                </Card>
               </div>
-            )}
-
-            {/* Radar Chart if selected */}
-            {graphType === "radar" && (
-              <div className="w-6/10 justify-self-center">
-                <RadarChart data={data[index]} />
+              Bar Chart if selected */}
+              {graphType === "bar" && <BarChart data={data[index]} />}
+              {/* Pie Chart if selected */}
+              {graphType === "pie" && (
+                <div className="w-6/10 justify-self-center">
+                  <PieChart data={data[index]} />
+                </div>
+              )}
+              {/* Radar Chart if selected */}
+              {graphType === "radar" && (
+                <div className="w-6/10 justify-self-center">
+                  <RadarChart data={data[index]} />
+                </div>
+              )}
+              {/* Extra Details */}
+              <div className="pl-15">
+                <p>Professor: {course.instructor}</p>
+                <p>Total Registrations: {grade_regs}</p>
+                {S + U === 0 && (
+                  <p>
+                    Average GPA:{" "}
+                    {((4 * A + 3 * B + 2 * C + D) / (grade_regs - W)).toFixed(
+                      2
+                    )}
+                  </p>
+                )}
+                <p>Withdraws: {W}</p>
+                {A + B + C + D + F ? (
+                  <p>
+                    Pass Rate:{" "}
+                    {(((A + B + C + D) / (grade_regs - W)) * 100).toFixed(2)}%
+                  </p>
+                ) : (
+                  <p>Pass Rate: {((S / (grade_regs - W)) * 100).toFixed(2)}%</p>
+                )}
               </div>
-            )}
-
-            {/* Extra Details */}
-            <div className="pl-15">
-              <p>Professor: {course.instructor}</p>
-              <p>Total Registrations: {grade_regs}</p>
-
-              {S + U === 0 && (
-                <p>
-                  Average GPA:{" "}
-                  {((4 * A + 3 * B + 2 * C + D) / (grade_regs - W)).toFixed(2)}
-                </p>
-              )}
-
-              <p>Withdraws: {W}</p>
-
-              {A + B + C + D + F ? (
-                <p>
-                  Pass Rate:{" "}
-                  {(((A + B + C + D) / (grade_regs - W)) * 100).toFixed(2)}%
-                </p>
-              ) : (
-                <p>Pass Rate: {((S / (grade_regs - W)) * 100).toFixed(2)}%</p>
-              )}
-            </div>
+            </Card>
           </div>
         );
       })}

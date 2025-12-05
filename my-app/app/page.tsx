@@ -1,7 +1,5 @@
 "use client";
-import Link from "next/link";
 import Button from "./_components/Button";
-import Card from "./_components/Card";
 
 const Home = () => {
   return (
@@ -13,6 +11,9 @@ const Home = () => {
         <Button href="./department_summary" w={320} h={60}>
           See Department Summary
         </Button>
+        <Button href="./easy_courses" w={320} h={60}>
+          Find Easy Courses
+        </Button>
         <Button href="./exact" w={320} h={60}>
           See Exact Courses
         </Button>
@@ -21,6 +22,9 @@ const Home = () => {
         </Button>
         <Button href="./instructors" w={320} h={60}>
           See Instructors
+        </Button>
+        <Button href="./about" w={320} h={60}>
+          About
         </Button>
       </div>
     </div>
