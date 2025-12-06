@@ -108,6 +108,17 @@ export default function About() {
                     In that case, the app will check to see if that course has satisfaction data (S/U) for that term and year and display a bar graph showing the distribution of Satisfactory (S) and Unsatisfactory (U) grades instead.
                     If neither grade data nor satisfaction data is available for the selected course in that term and year, a message will be displayed indicating that no data is available.
                 </p>
+                
+                <h2 className="about-h2">Exact Courses - All Years</h2>
+                <p>Users can also search for specific courses across all years by selecting the department and entering the course number. Then 
+                    the user can click on the &quot;Get Graph&quot; button to view detailed statistics and visualizations for the selected course number across all available years.
+                    Similar to the Exact Courses section, if the course exists in the database, bar graphs will be displayed showing the distribution of grades (A, B, C, D, F, <abbr title="Not Reported">NR</abbr>)
+                    or satisfaction rates (S/U) for all sections of the course offered in each term and year available in the database.
+                    Each graph will represent a different term and year combination, allowing users to see how the course performance has changed over time.
+                    Extra details such as total registrations, average GPA, withdraws, and pass rate will also be shown below each graph.
+                    If no data is available for the selected course across all years, a message will be displayed indicating that no data is available.
+
+                </p>
 
                 <h2 className="about-h2">Instructors</h2>
                 <p>Users can select an instructor from the dropdown menu to view all courses they have taught along with relevant statistics.
