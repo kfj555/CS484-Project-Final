@@ -75,13 +75,13 @@ const AverageGraphBody = ({
                 {graphType === "bar" && <BarChart data={data[index]} />}
                 {/* Pie Chart if selected */}
                 {graphType === "pie" && (
-                  <div className="w-6/10 justify-self-center">
+                  <div className="w-5/10 justify-self-center">
                     <PieChart data={data[index]} />
                   </div>
                 )}
                 {/* Radar Chart if selected */}
                 {graphType === "radar" && (
-                  <div className="w-6/10 justify-self-center">
+                  <div className="w-5/10 justify-self-center">
                     <RadarChart data={data[index]} />
                   </div>
                 )}
