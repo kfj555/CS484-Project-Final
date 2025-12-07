@@ -81,7 +81,12 @@ const GPAIcon = () => {
 const LabelBar = ({ course }: { course: Course }) => {
   const { A, B, C, D, F, grade_regs, W, S, U } = course;
   return (
-    <div className="flex flex-row h-18 gap-10 mt-4">
+    <div
+      className="flex flex-row flex-wrap
+    w-full mt-4
+    gap-6 sm:gap-8 lg:gap-10
+    justify-center"
+    >
       {S + U === 0 ? (
         <LabelCard color="rgba(0, 100, 255, 0.25)">
           <div className="flex flex-col gap-1 justify-center items-center">

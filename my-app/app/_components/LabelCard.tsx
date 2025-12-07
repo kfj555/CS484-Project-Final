@@ -13,7 +13,8 @@ const LabelCard = ({ children, color, shadow = false }: CardProps) => {
   };
   return (
     <div
-      className="flex flex-col p-6 rounded-md bg-white w-full justify-center"
+      className="flex flex-col p-6 rounded-md bg-white justify-center
+        min-w-[150px] max-w-[220px] flex-1 h-18"
       style={style}
     >
       {children}

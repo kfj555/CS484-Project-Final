@@ -2,10 +2,10 @@
 import { useState, useEffect } from "react";
 import Card from "../_components/Card";
 import SearchableSelect from "../_components/SearchableSelect";
-import Button from "../_components/Button";
 import { useStore } from "../store";
 import { Course } from "../types";
 import Link from "next/link";
+import BackButton from "../_components/BackButton";
 
 const BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
 const Instructor = () => {
@@ -71,7 +71,7 @@ const Instructor = () => {
               getOptionText={(i) => i.instructor}
               onChange={(i) => setInstructor(i.instructor)}
             />
-            <Button href="/">Back</Button>
+            <BackButton />
           </div>
         </Card>
       </div>

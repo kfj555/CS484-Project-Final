@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import Select from "../_components/Select";
-import "../_styles/department-summary.css"
+import "../_styles/department-summary.css";
 import SearchableSelect from "../_components/SearchableSelect";
-import { url } from "inspector";
 import Card from "../_components/Card";
 import Button from "../_components/Button";
+import { useStore } from "../store";
 import Link from "next/link";
 
 type EasyCourse = {
@@ -13,6 +13,7 @@ type EasyCourse = {
   course_nbr: string;
   instructor: string;
   avg_gpa: number;
+  dept_name: string;
 };
 
 // button styling for this page
@@ -33,6 +34,8 @@ export default function EasyCoursesPage() {
   const [easyCoursesMap, setEasyCoursesMap] = useState<
     Map<string, EasyCourse[]>
   >(new Map());
+
+  const { setInstructor, setCourseNumber, setDepartment, setSubj } = useStore();
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -90,79 +93,114 @@ export default function EasyCoursesPage() {
   return (
     <div className="flex flex-col items-center py-10">
       <div className=" mt-8 mr-120"></div>
-      <Card>
-        <div className="flex flex-col items-center">
-          <SearchableSelect
-            label="Department"
-            items={departmentArray}
-            onChange={(d) => setSelectedDepartment(d)}
-            value={selectedDepartment}
-          />
-          <Select
-            label="Course Levels"
-            items={courseLevels}
-            onChange={setSelectedLevel}
-            value={selectedLevel}
-          />
-          <div className="flex flex-col gap-2 mt-4">
-            <Button {...buttonStyle} onClick={findEasyCourseHandler}>
-              Find
-            </Button>
-            <Button {...buttonStyle} href="/">
-              Back
-            </Button>
+      <div className="w-1/2">
+        <Card>
+          <div className="flex flex-col items-center">
+            <SearchableSelect
+              label="Department"
+              items={departmentArray}
+              onChange={(d) => setSelectedDepartment(d)}
+              value={selectedDepartment}
+            />
+            <Select
+              label="Course Levels"
+              items={courseLevels}
+              onChange={setSelectedLevel}
+              value={selectedLevel}
+            />
+            <div className="flex flex-row gap-2 my-4">
+              <Button {...buttonStyle} href="/">
+                Back
+              </Button>
+              <Button {...buttonStyle} onClick={findEasyCourseHandler}>
+                Find
+              </Button>
+            </div>
           </div>
-        </div>
-        <div className="easy-courses-results-container">
-          <div className="flex flex-col">
-            {easyCoursesMap.size > 0 ? (
-              Array.from(easyCoursesMap.entries()).map(
-                ([courseKey, courses], index) => (
-                  <table
-                    className="courses-table"
-                    key={`${courseKey}-${index}`}
-                  >
-                    <thead>
-                      <tr>
-                        <th
-                          id={courseKey}
-                          className="course-subject-number-header"
-                          colSpan={2}
-                        >
-                          {courses[0].subj_cd + " " + courses[0].course_nbr}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="courses-entries-header-row">
-                        <th>Instructor</th>
-                        <th>Average GPA</th>
-                      </tr>
-                      {courses.map((course, index) => (
-                        <tr
-                          className="courses-entries-row"
-                          key={`${courseKey}-${index}`}
-                        >
-                          <th>{course.instructor}</th>
+          <div className="easy-courses-results-container">
+            <div className="flex flex-col">
+              {easyCoursesMap.size > 0 ? (
+                Array.from(easyCoursesMap.entries()).map(
+                  ([courseKey, courses], index) => (
+                    <table
+                      className="courses-table"
+                      key={`${courseKey}-${index}`}
+                    >
+                      <thead>
+                        <tr>
                           <th
-                            style={{
-                              backgroundColor: getGpaColor(course.avg_gpa),
-                            }}
+                            id={courseKey}
+                            className="course-subject-number-header"
+                            colSpan={2}
                           >
-                            {course.avg_gpa.toFixed(2)}
+                            <Link
+                              href={`./graph?type=average&s=${encodeURIComponent(
+                                courses[0].subj_cd
+                              )}&d=${encodeURIComponent(
+                                courses[0].dept_name
+                              )}&n=${encodeURIComponent(
+                                courses[0].course_nbr
+                              )}`}
+                            >
+                              <button
+                                className="hover:cursor-pointer"
+                                onClick={() => {
+                                  setCourseNumber(courses[0].course_nbr);
+                                  setSubj(courses[0].subj_cd);
+                                  setDepartment(courses[0].dept_name);
+                                }}
+                              >
+                                {courses[0].subj_cd +
+                                  " " +
+                                  courses[0].course_nbr}
+                              </button>
+                            </Link>
                           </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        <tr className="courses-entries-header-row">
+                          <th>Instructor</th>
+                          <th>Average GPA</th>
+                        </tr>
+                        {courses.map((course, index) => (
+                          <tr
+                            className="courses-entries-row"
+                            key={`${courseKey}-${index}`}
+                          >
+                            <th>
+                              <Link href={"./instructors"}>
+                                <button
+                                  className="hover:cursor-pointer"
+                                  onClick={() =>
+                                    setInstructor(course.instructor)
+                                  }
+                                >
+                                  {course.instructor}
+                                </button>
+                              </Link>
+                            </th>
+
+                            <th
+                              style={{
+                                backgroundColor: getGpaColor(course.avg_gpa),
+                              }}
+                            >
+                              {course.avg_gpa.toFixed(2)}
+                            </th>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )
                 )
-              )
-            ) : (
-              <p>No entries</p>
-            )}
+              ) : (
+                <p>No entries</p>
+              )}
+            </div>
           </div>
-        </div>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 }

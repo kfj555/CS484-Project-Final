@@ -102,7 +102,9 @@ courseRouter.get("/average", (req: Request, res: Response) => {
       AVG(S) AS S, 
       AVG(U) AS U, 
       AVG(grade_regs) AS grade_regs,
-      AVG(NR) AS NR, 
+      AVG(NR) AS NR,
+      subj_cd,
+      course_nbr, 
       title 
       FROM courses c
       WHERE dept_name = ? AND subj_cd = ? AND course_nbr = ?

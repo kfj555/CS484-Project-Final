@@ -17,9 +17,11 @@ statisticsRouter.get("/all", (req: Request, res: Response) => {
   // Normalize and validate level to avoid producing `undefined%`.
   const stringLevel = String(level).trim();
   let dbCourseLevel: string;
-  if (stringLevel === "all") { //get all levels
+  if (stringLevel === "all") {
+    //get all levels
     dbCourseLevel = "%";
-  } else { //get specific level sql query looks like c.subj_cd LIKE '1%'
+  } else {
+    //get specific level sql query looks like c.subj_cd LIKE '1%'
     dbCourseLevel = `${stringLevel.at(0)}%`;
   }
   const rows = db
@@ -53,7 +55,6 @@ statisticsRouter.get("/all", (req: Request, res: Response) => {
     return res.status(400).json({ error: "DB Error" });
   }
 
-
   res.json(rows);
 });
 
@@ -71,6 +72,7 @@ type dbEasyCourseResponse = {
   U: number;
   W: number;
   grade_regs: number;
+  dept_name: string;
 };
 
 type easyCourseGpa = {
@@ -83,7 +85,8 @@ type easyCourseGpa = {
   pass_rate: number;
   prereq_rate: number;
   withdraw_rate: number;
-}
+  dept_name: string;
+};
 
 type easyCourseSatisfaction = {
   subj_cd: string;
@@ -92,16 +95,19 @@ type easyCourseSatisfaction = {
   instructor: string;
   satisfaction_rate: number;
   withdraw_rate: number;
-}
+  dept_name: string;
+};
 
 // Full route would be 'http://localhost:3001/statistics/easy?department=_&subj=_&level=_&minYear=_"
 statisticsRouter.get("/easy", (req: Request, res: Response) => {
-  const {department, subj, level, minYear} = req.query;
+  const { department, subj, level, minYear } = req.query;
   const stringLevel = String(level).trim();
   let dbCourseLevel: string;
-  if (stringLevel === "all") { //get all levels
+  if (stringLevel === "all") {
+    //get all levels
     dbCourseLevel = "%";
-  } else { //get specific level sql query looks like c.subj_cd LIKE '1%'
+  } else {
+    //get specific level sql query looks like c.subj_cd LIKE '1%'
     dbCourseLevel = `${stringLevel.at(0)}%`;
   }
   // Placeholder implementation
@@ -120,7 +126,8 @@ statisticsRouter.get("/easy", (req: Request, res: Response) => {
         c.S,
         c.U,
         c.W,
-        c.grade_regs
+        c.grade_regs,
+        c.dept_name 
       FROM courses c
       JOIN semesters s ON c.semester_id = s.id
       WHERE c.dept_name = ? AND
@@ -135,7 +142,7 @@ statisticsRouter.get("/easy", (req: Request, res: Response) => {
       `
     )
     .all(department, subj, dbCourseLevel, minYear) as dbEasyCourseResponse[];
-  
+
   if (!rows) {
     return res.status(400).json({ error: "DB Error" });
   }
@@ -151,14 +158,17 @@ statisticsRouter.get("/easy", (req: Request, res: Response) => {
     const totalSatisfaction = course.S + course.U;
     //If there are graded students, calculate GPA related metrics
     if (totalGrades > 0) {
-      const avgGpa = (4.0 * course.A + 3.0 * course.B + 2.0 * course.C + 1.0 * course.D) / totalGrades;
+      const avgGpa =
+        (4.0 * course.A + 3.0 * course.B + 2.0 * course.C + 1.0 * course.D) /
+        totalGrades;
       /*
       if (avgGpa < 3){
         continue; //skip courses that do not meet the easy course criteria
       }
       */
       const percentAGrade = (course.A / totalGrades) * 100;
-      const passRate = ((course.A + course.B + course.C + course.D) / totalGrades) * 100;
+      const passRate =
+        ((course.A + course.B + course.C + course.D) / totalGrades) * 100;
       const prereqRate = ((course.A + course.B + course.C) / totalGrades) * 100;
       const withdrawRate = (course.W / course.grade_regs) * 100;
       easyCoursesGpa.push({
@@ -171,13 +181,14 @@ statisticsRouter.get("/easy", (req: Request, res: Response) => {
         pass_rate: parseFloat(passRate.toFixed(2)),
         prereq_rate: parseFloat(prereqRate.toFixed(2)),
         withdraw_rate: parseFloat(withdrawRate.toFixed(2)),
+        dept_name: course.dept_name,
       });
       continue; //skip satisfaction calculation if grades exist
     }
     //When there are no graded students, calculate satisfaction related metrics if satisfaction data exists
     if (totalSatisfaction > 0) {
       const satisfactionRate = (course.S / totalSatisfaction) * 100;
-      if(satisfactionRate < 70){
+      if (satisfactionRate < 70) {
         continue; //skip courses that do not meet the easy course criteria
       }
       const withdrawRate = (course.W / course.grade_regs) * 100;
@@ -188,30 +199,36 @@ statisticsRouter.get("/easy", (req: Request, res: Response) => {
         instructor: course.instructor,
         satisfaction_rate: parseFloat(satisfactionRate.toFixed(2)),
         withdraw_rate: parseFloat(withdrawRate.toFixed(2)),
+        dept_name: course.dept_name,
       });
     }
   }
 
   //perform lexicographical sorting on the arrays based on the most important metric first
-  easyCoursesGpa.sort((a, b) => 
-    b.avg_gpa - a.avg_gpa ||
-    b.percent_A_grade - a.percent_A_grade ||
-    b.prereq_rate - a.prereq_rate ||
-    b.pass_rate - a.pass_rate ||
-    b.withdraw_rate - a.withdraw_rate
+  easyCoursesGpa.sort(
+    (a, b) =>
+      b.avg_gpa - a.avg_gpa ||
+      b.percent_A_grade - a.percent_A_grade ||
+      b.prereq_rate - a.prereq_rate ||
+      b.pass_rate - a.pass_rate ||
+      b.withdraw_rate - a.withdraw_rate
   );
-  easyCoursesSatisfaction.sort((a, b) => 
-    b.satisfaction_rate - a.satisfaction_rate ||
-    a.withdraw_rate - b.withdraw_rate
+  easyCoursesSatisfaction.sort(
+    (a, b) =>
+      b.satisfaction_rate - a.satisfaction_rate ||
+      a.withdraw_rate - b.withdraw_rate
   );
 
   //Next we create maps to group courses by subject code and course number.
   //Ex: [["CS 101", [course1, course2, ...]], ["CS 201", [course1, course2, ...]], ...]
-  let easyGpaMap = new Map<string, {easyCoursesArr: easyCourseGpa[], totalGpa: number}>();
+  let easyGpaMap = new Map<
+    string,
+    { easyCoursesArr: easyCourseGpa[]; totalGpa: number }
+  >();
   for (const course of easyCoursesGpa) {
     const key = `${course.subj_cd} ${course.course_nbr}`;
     if (!easyGpaMap.has(key)) {
-      easyGpaMap.set(key, {easyCoursesArr: [], totalGpa: 0});
+      easyGpaMap.set(key, { easyCoursesArr: [], totalGpa: 0 });
     }
     const currentKeyData = easyGpaMap.get(key);
     currentKeyData?.easyCoursesArr.push(course);
@@ -228,9 +245,11 @@ statisticsRouter.get("/easy", (req: Request, res: Response) => {
   }
 
   for (const [key, coursesData] of easyGpaMap) {
-    if (coursesData){
-      coursesData.totalGpa = parseFloat((coursesData.totalGpa / coursesData.easyCoursesArr.length).toFixed(2));
-      if (coursesData.totalGpa < 3){
+    if (coursesData) {
+      coursesData.totalGpa = parseFloat(
+        (coursesData.totalGpa / coursesData.easyCoursesArr.length).toFixed(2)
+      );
+      if (coursesData.totalGpa < 3) {
         easyGpaMap.delete(key); //remove the key if average GPA is below 3.0
       }
     }
