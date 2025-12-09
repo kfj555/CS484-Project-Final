@@ -44,7 +44,7 @@ export default function About() {
                 <h1 className="about-h1">How to Use</h1>
                 <p><b>Verification:</b> Users must first verify their UIC email by receiving a verification code sent to their UIC email address.</p>
                 <br/>
-                <p>There will be 4 different sections to explore the data:</p>
+                <p>There will be 6 different sections to explore the data:</p>
                 <ul className="about-ul">
                     <li>
                         <b>Department Summary:</b> View aggregated statistics for all courses within a selected department.
@@ -54,6 +54,12 @@ export default function About() {
                     </li>
                     <li>
                         <b>Exact Courses:</b> Search for specific courses by department, course number, term, and year to view detailed statistics and visualizations.
+                    </li>
+                    <li>
+                        <b>Course Average:</b> Get a graph showing the course average for a course.
+                    </li>
+                    <li>
+                        <b>Course History:</b> View historical data for a specific course across all available terms and years.
                     </li>
                     <li>
                         <b>Instructors:</b> Explore instructor-specific data to see what courses they&apos;ve taught and stats related to the courses.
@@ -109,7 +115,17 @@ export default function About() {
                     If neither grade data nor satisfaction data is available for the selected course in that term and year, a message will be displayed indicating that no data is available.
                 </p>
                 
-                <h2 className="about-h2">Exact Courses - All Years</h2>
+                <h2 className="about-h2">Course Average</h2>
+                <p>Users can get a graph showing the course average for a specific course by selecting the department and entering the course number.
+                    Then the user can click on the &quot;Get Graph&quot; button to view detailed statistics and visualizations for the selected course number.
+                    If the course exists in the database, bar graphs will be displayed showing the distribution of grades (A, B, C, D, F, <abbr title="Not Reported">NR</abbr>)
+                    or satisfaction rates (S/U) for all sections of the course offered in each term and year available in the database.
+                    If the data for letter grades (A-F) is available, the users will be able to choose between bar, pie, or radar charts to visualize the grade distribution.
+                    If only satisfaction data (S/U) is available, only bar and pie charts will be shown. 
+                    The &quot;Find Exact Course&quot; button is meant to help users to quickly go to the Exact Courses page.
+                </p> 
+
+                <h2 className="about-h2">Course History</h2>
                 <p>Users can also search for specific courses across all years by selecting the department and entering the course number. Then 
                     the user can click on the &quot;Get Graph&quot; button to view detailed statistics and visualizations for the selected course number across all available years.
                     Similar to the Exact Courses section, if the course exists in the database, bar graphs will be displayed showing the distribution of grades (A, B, C, D, F, <abbr title="Not Reported">NR</abbr>)
