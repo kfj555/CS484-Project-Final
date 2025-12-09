@@ -119,9 +119,6 @@ export default function ExactBody() {
               onChange={setCourseNumber}
               loading={loadingCourses}
             />
-            <div className="flex items-center justify-center">
-              <Button href="./exact">Find Exact Course</Button>
-            </div>
             <div className="flex justify-evenly">
               <Button href="./">Back</Button>
               <Button

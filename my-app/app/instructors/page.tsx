@@ -6,13 +6,20 @@ import { useStore } from "../store";
 import { Course } from "../types";
 import Link from "next/link";
 import BackButton from "../_components/BackButton";
+import InstructorLabelBar from "../_components/InstructorLabelBar";
+import Button from "../_components/Button";
 
 const BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
 const Instructor = () => {
-  // const [instructor, setInstructor] = useState<string>("");
   const [instructors, setInstructors] = useState<{ instructor: string }[]>([]);
   const [instructorInfo, setInstructorInfo] = useState<
-    (Course & { avg_gpa: number })[]
+    (Course & {
+      avg_gpa: number;
+      total_students: number;
+      times: number;
+      avg_sr: number;
+      avg_pr: number;
+    })[]
   >([]);
   const [totalAvgGPA, setTotalAvgGPA] = useState<number | null>(null);
   const { instructor, setInstructor } = useStore();
@@ -58,8 +65,48 @@ const Instructor = () => {
     fetchInfo();
   }, [instructor]);
 
+  const [showTopButton, setShowTopButton] = useState<boolean>(false);
+
+  // Listen to window scroll so the fixed button appears when the user scrolls the page
+  useEffect(() => {
+    const scrollEl = document.scrollingElement || document.documentElement;
+
+    const onScroll = () => {
+      const scrollable = scrollEl.scrollHeight - scrollEl.clientHeight;
+      if (scrollable < 100) {
+        setShowTopButton(false);
+        return;
+      }
+
+      const pct = scrollEl.scrollTop / scrollable;
+      setShowTopButton(pct > 0.1);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const blueButtonStyle = {
+    color: "#001E62",
+    textColor: "white",
+    hoverColor: "#0033a0",
+  };
+
   return (
     <div className="flex flex-col items-center justify-center w-full">
+      {showTopButton && (
+        <div className="fixed bottom-10 right-10">
+          <Button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            {...blueButtonStyle}
+          >
+            Scroll to Top
+          </Button>
+        </div>
+      )}
+
       {/* Select instructor */}
       <div className="my-8">
         <Card>
@@ -76,55 +123,90 @@ const Instructor = () => {
         </Card>
       </div>
 
-      {/* Instructor's info */}
-      <div className="">
-        <Card>
-          <div className="w-120">
-            <h2 className="text-lg font-bold mb-4">Selected Instructor</h2>
-            {instructor ? (
-              <div>
-                <p>{instructor}</p>
-                <p>
-                  {`Total Average GPA: ${
-                    totalAvgGPA !== null
-                      ? totalAvgGPA.toFixed(2)
-                      : "No GPA data"
-                  }`}
-                </p>
+      {/* Info Display */}
+      <div className="w-6/10 mb-8 my-4">
+        <div className="flex flex-col gap-4">
+          {instructor ? (
+            <div className="flex flex-col gap-4">
+              {/* Instructor name and overall details */}
+              <Card>
+                <h2 className="text-lg font-bold">Selected Instructor</h2>
+                <p className="text-xl opacity-80">{instructor}</p>
+
+                <InstructorLabelBar
+                  avgGPA={totalAvgGPA}
+                  avgPassRate={
+                    instructorInfo.length > 0
+                      ? instructorInfo.reduce(
+                          (acc, c) =>
+                            acc + (c.avg_pr > 0 ? c.avg_pr : c.avg_sr),
+                          0
+                        ) / instructorInfo.length
+                      : null
+                  }
+                  totalStudents={instructorInfo.reduce(
+                    (acc, c) => acc + c.total_students,
+                    0
+                  )}
+                  numCourses={instructorInfo.length}
+                />
+              </Card>
+
+              <Card>
                 <h3 className="text-md font-semibold mt-4 mb-2">
                   Courses Taught:
                 </h3>
-                {instructorInfo.length > 0 ? (
-                  <ul className="list-disc list-inside">
+                {instructorInfo.length ? (
+                  <div className="flex flex-col gap-4">
                     {instructorInfo.map((course, index) => (
-                      <li key={index}>
-                        {/* Links to average graph of instructor */}
-                        <Link
-                          href={`./graph?type=instructor&s=${encodeURIComponent(
-                            course.subj_cd
-                          )}&d=${encodeURIComponent(
-                            course.dept_name
-                          )}&n=${encodeURIComponent(course.course_nbr)}`}
-                        >
-                          {course.title} -{" "}
-                          {course.avg_gpa !== 0
-                            ? `Average GPA: ${course.avg_gpa.toFixed(2)}`
-                            : "No GPA data"}
-                        </Link>
-                      </li>
+                      <Link
+                        key={index}
+                        href={`./graph?type=instructor&s=${encodeURIComponent(
+                          course.subj_cd
+                        )}&d=${encodeURIComponent(
+                          course.dept_name
+                        )}&n=${encodeURIComponent(course.course_nbr)}`}
+                      >
+                        <Card shadow={true} color="rgba(0,0,0,0.05)">
+                          <div className="flex flex-col gap-1 opacity-80">
+                            <p className="text-lg font-medium">
+                              {course.title}
+                            </p>
+                            <p>
+                              {`
+                                ${
+                                  course.avg_gpa
+                                    ? course.avg_gpa.toFixed(2)
+                                    : "N/A"
+                                } 
+                                GPA |
+                                ${(course.avg_pr > 0
+                                  ? course.avg_pr
+                                  : course.avg_sr
+                                ).toFixed(2)}% Pass Rate | 
+                                ${course.total_students} Students | ${
+                                course.times
+                              } Sections
+                              `}
+                            </p>
+                          </div>
+                        </Card>
+                      </Link>
                     ))}
-                  </ul>
+                  </div>
                 ) : (
-                  <p className="text-gray-500">
+                  <p className="text-gray-500 mt-4">
                     No courses found for this instructor.
                   </p>
                 )}
-              </div>
-            ) : (
+              </Card>
+            </div>
+          ) : (
+            <Card>
               <p className="text-gray-500">No instructor selected</p>
-            )}
-          </div>
-        </Card>
+            </Card>
+          )}
+        </div>
       </div>
     </div>
   );

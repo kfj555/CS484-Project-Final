@@ -78,7 +78,13 @@ const GPAIcon = () => {
 };
 
 // formats multiple labels in a row, needs course data to display
-const LabelBar = ({ course }: { course: Course }) => {
+const LabelBar = ({
+  course,
+  average = false,
+}: {
+  course: Course;
+  average?: boolean;
+}) => {
   const { A, B, C, D, F, grade_regs, W, S, U } = course;
   return (
     <div
@@ -116,14 +122,16 @@ const LabelBar = ({ course }: { course: Course }) => {
           )}
         </div>
       </LabelCard>
-      <LabelCard color="rgba(255, 0, 255, 0.25)">
-        <div className="flex flex-col gap-1 justify-center items-center">
-          <p className="flex gap-1 items-center">
-            <RegistrationsIcon /> Registrations
-          </p>
-          <p>{Math.ceil(grade_regs)}</p>
-        </div>
-      </LabelCard>
+      {!average && (
+        <LabelCard color="rgba(255, 0, 255, 0.25)">
+          <div className="flex flex-col gap-1 justify-center items-center">
+            <p className="flex gap-1 items-center">
+              <RegistrationsIcon /> Registrations
+            </p>
+            <p>{Math.ceil(grade_regs)}</p>
+          </div>
+        </LabelCard>
+      )}
       <LabelCard color="rgba(255, 0, 0, 0.25)">
         <div className="flex flex-col gap-1 justify-center items-center">
           <p className="flex gap-1 items-center">

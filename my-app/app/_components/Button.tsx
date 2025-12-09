@@ -16,7 +16,7 @@ interface ButtonProps {
 // can change dimensions, colors, add an onclick or provide a link to another page
 const Button = ({
   href = "",
-  color = "white",
+  color = "",
   hoverColor = "#e2e8f0",
   textColor = "black",
   onClick = null,
@@ -32,11 +32,12 @@ const Button = ({
     color: textColor,
     width: w,
     height: h,
+    boxShadow: "0px 0px 1px 1px rgba(0, 0, 0, 0.2)",
   };
 
   // constant/default button options
   const className =
-    "border rounded-sm cursor-pointer transition-colors px-4 py-1 flex justify-center items-center";
+    "rounded-lg cursor-pointer bg-white px-4 py-1 flex justify-center items-center";
 
   const ButtonEl = //button element itself, may be wrapped with link for return
     (

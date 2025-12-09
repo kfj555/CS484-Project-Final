@@ -7,6 +7,7 @@ import "../_styles/easy-courses.css";
 import Link from "next/link";
 import Card from "../_components/Card";
 import { useStore } from "../store";
+import Button from "../_components/Button";
 
 type easyCourseGpa = {
   subj_cd: string;
@@ -29,6 +30,19 @@ type easyCourseSatisfaction = {
   satisfaction_rate: number;
   withdraw_rate: number;
   dept_name: string;
+};
+
+const redButtonStyle = {
+  color: "#d50032",
+  textColor: "white",
+  hoverColor: "#ff003c",
+  h: 38,
+};
+
+const blueButtonStyle = {
+  color: "#001E62",
+  textColor: "white",
+  hoverColor: "#0033a0",
 };
 
 const BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
@@ -72,24 +86,23 @@ const Easy_courses = () => {
 
   // Listen to window scroll so the fixed button appears when the user scrolls the page
   useEffect(() => {
-    const onWindowScroll = () => {
-      const scrollable =
-        document.documentElement.scrollHeight - window.innerHeight;
-      // avoid division by zero; if no scrollable area, hide the button
-      if (!scrollable) {
+    const scrollEl = document.scrollingElement || document.documentElement;
+
+    const onScroll = () => {
+      const scrollable = scrollEl.scrollHeight - scrollEl.clientHeight;
+      if (scrollable < 100) {
         setShowTopButton(false);
         return;
       }
-      const pct = window.scrollY / scrollable; // 0..1
-      if (pct > 0.5) setShowTopButton(true); // show after 50% of page
-      else setShowTopButton(false);
+
+      const pct = scrollEl.scrollTop / scrollable;
+      setShowTopButton(pct > 0.1);
     };
 
-    // Attach listener and do an initial check
-    window.addEventListener("scroll", onWindowScroll, { passive: true });
-    onWindowScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
 
-    return () => window.removeEventListener("scroll", onWindowScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
@@ -402,9 +415,9 @@ const Easy_courses = () => {
       <div className="w-1/2">
         <Card>
           <div className="flex flex-col">
-            <Link href="/" id="easy-courses-back-button" className="ml-4 mt-4">
+            <Button href="/" {...blueButtonStyle}>
               Back
-            </Link>
+            </Button>
             <div className="flex flex-col items-center">
               <Activity mode={hideMenu ? "hidden" : "visible"}>
                 <div className="flex flex-col items-center">
@@ -436,19 +449,16 @@ const Easy_courses = () => {
                   />
                 </div>
               </Activity>
-              <div id="easy-courses-button-container">
-                <button
-                  id="find-courses-button"
-                  onClick={handleFindEasyCourses}
-                >
+              <div className="flex justify-evenly w-80 my-6">
+                <Button onClick={handleFindEasyCourses} {...redButtonStyle}>
                   Find Courses
-                </button>
-                <button
-                  id="hide-menu-button"
+                </Button>
+                <Button
                   onClick={() => setHideMenu(!hideMenu)}
+                  {...redButtonStyle}
                 >
                   {hideMenu ? "Show" : "Hide"}
-                </button>
+                </Button>
               </div>
             </div>
             <div id="easy-courses-results-container">
@@ -459,12 +469,16 @@ const Easy_courses = () => {
               )}
             </div>
             {showTopButton && (
-              <button
-                id="scroll-to-top-button"
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              >
-                Scroll to Top
-              </button>
+              <div className="fixed bottom-10 right-10">
+                <Button
+                  onClick={() =>
+                    window.scrollTo({ top: 0, behavior: "smooth" })
+                  }
+                  {...blueButtonStyle}
+                >
+                  Scroll to Top
+                </Button>
+              </div>
             )}
           </div>
         </Card>

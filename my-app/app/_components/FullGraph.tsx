@@ -28,6 +28,12 @@ interface FullGraphProps {
 
 type GraphOptions = "bar" | "pie" | "radar";
 
+const blueButtonStyle = {
+  color: "#001E62",
+  textColor: "white",
+  hoverColor: "#0033a0",
+};
+
 const FullGraph = ({
   data,
   average = false,
@@ -51,7 +57,7 @@ const FullGraph = ({
       }
 
       const pct = scrollEl.scrollTop / scrollable;
-      setShowTopButton(pct > 0.5);
+      setShowTopButton(pct > 0.1);
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -101,9 +107,9 @@ const FullGraph = ({
 
         {/* Select chart type */}
         <div className="flex gap-1 mt-6">
-          <label>Graph Type:</label>
+          <label className="ml-2">Graph Type:</label>
           <select
-            className="border w-fit ml-3 mb-2 rounded-md"
+            className="border w-fit ml-1 mb-2 rounded-md"
             onChange={(e) => setGraphType(e.target.value as GraphOptions)}
           >
             <option value="bar">Bar</option>
@@ -117,12 +123,14 @@ const FullGraph = ({
       </div>
 
       {showTopButton && (
-        <button
-          className="fixed bottom-6 right-6 z-50 bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-600 transition"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        >
-          Scroll to Top
-        </button>
+        <div className="fixed bottom-10 right-10">
+          <Button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            {...blueButtonStyle}
+          >
+            Scroll to Top
+          </Button>
+        </div>
       )}
 
       {/* Graphs */}
@@ -178,7 +186,7 @@ const FullGraph = ({
               </div>
 
               {/* Info section */}
-              <LabelBar course={course} />
+              <LabelBar course={course} average={average} />
             </Card>
           </div>
         );

@@ -8,7 +8,7 @@ const DepartmentIcon = () => {
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
-      stroke="currentColor"
+      stroke="black"
       className="size-6"
     >
       <path
@@ -27,7 +27,7 @@ const EasyIcon = () => {
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
-      stroke="currentColor"
+      stroke="black"
       className="size-6"
     >
       <path
@@ -46,7 +46,7 @@ const ExactIcon = () => {
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
-      stroke="currentColor"
+      stroke="black"
       className="size-6"
     >
       <path
@@ -65,7 +65,7 @@ const AverageIcon = () => {
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
-      stroke="currentColor"
+      stroke="black"
       className="size-6"
     >
       <path
@@ -84,7 +84,7 @@ const HistoryIcon = () => {
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
-      stroke="currentColor"
+      stroke="black"
       className="size-6"
     >
       <path
@@ -103,7 +103,7 @@ const InstructorIcon = () => {
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
-      stroke="currentColor"
+      stroke="black"
       className="size-6"
     >
       <path
@@ -122,7 +122,7 @@ const AboutIcon = () => {
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
-      stroke="currentColor"
+      stroke="black"
       className="size-6"
     >
       <path

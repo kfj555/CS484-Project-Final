@@ -115,7 +115,7 @@ export default function ExactAllYearsBody() {
   }, [subj, department, loaded]);
 
   return (
-    <div>
+    <div className="mt-7">
       <Card>
         <div className="flex flex-col gap-3">
           {departments.length > 0 ? (

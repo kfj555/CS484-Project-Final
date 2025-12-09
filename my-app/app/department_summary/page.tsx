@@ -17,7 +17,7 @@ type EasyCourse = {
 };
 
 // button styling for this page
-const buttonStyle = {
+const redButtonStyle = {
   color: "#d50032",
   textColor: "white",
   hoverColor: "#ff003c",
@@ -109,10 +109,10 @@ export default function EasyCoursesPage() {
               value={selectedLevel}
             />
             <div className="flex flex-row gap-2 my-4">
-              <Button {...buttonStyle} href="/">
+              <Button {...redButtonStyle} href="/">
                 Back
               </Button>
-              <Button {...buttonStyle} onClick={findEasyCourseHandler}>
+              <Button {...redButtonStyle} onClick={findEasyCourseHandler}>
                 Find
               </Button>
             </div>
